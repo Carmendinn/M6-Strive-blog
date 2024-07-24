@@ -41,10 +41,14 @@ router.get('/me', authMiddleware, (req, res) => {
     res.json(authorData);
 });
 
-router.get('/google/callback', 
+
+router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+
+
+router.get('/google/callback',
     passport.authenticate('google', { failureRedirect: `${FRONTEND_URL}/login` }),
     handleAuthCallback
-  ); //get a google
+); //get a google
 
 
 

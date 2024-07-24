@@ -84,19 +84,34 @@ export const deleteComment = async (postId, commentId) => {
 
 
 //  Funzione per registrare un nuovo utente
-export const registerUser = (userData) => api.post("/authors", userData);
+export const registerUser = async (userData) => {
+  try {
+    const response = await api.post("/auth/register", userData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    console.log("Risposta registrazione:", response.data);
+    if (response.data.token) {
+      localStorage.setItem("token", response.data.token);
+    }
+    return response.data;
+  } catch (error) {
+    console.error("Errore nella registrazione:", error.response?.data || error.message);
+    throw error;
+  }
+};
 
-    export const loginUser = async (credentials) => {
-      try {
-        const response = await api.post("/auth/login", credentials); 
-        console.log("Risposta API login:", response.data); 
-        return response.data; 
-      } catch (error) {
-        console.error("Errore nella chiamata API di login:", error); 
-        throw error; 
-      }
-    };
-    
+export const loginUser = async (credentials) => {
+  try {
+    const response = await api.post("/auth/login", credentials); // Effettua la richiesta di login
+    console.log("Risposta API login:", response.data); // Log della risposta per debugging
+    return response.data; // Restituisce i dati della risposta
+  } catch (error) {
+    console.error("Errore nella chiamata API di login:", error); // Log dell'errore per debugging
+    throw error; // Lancia l'errore per essere gestito dal chiamante
+  }
+};
     //  Funzione per ottenere i dati dell'utente attualmente autenticato
     export const getMe = () =>
       api.get("/auth/me").then((response) => response.data);
