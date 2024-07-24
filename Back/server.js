@@ -28,17 +28,16 @@ const corsOptions = {
           'https://m6-strive-blog.onrender.com'
       ];
       if (process.env.NODE_ENV === 'development') {
-        // In sviluppo, permettiamo anche richieste senza origine (es. Postman)
+        
         callback(null, true);
       } else if (whitelist.indexOf(origin) !== -1 || !origin) {
-        // In produzione, controlliamo se l'origine è nella whitelist
+        
         callback(null, true);
       } else {
         callback(new Error('PERMESSO NEGATO - CORS'));
       }
     },
-    credentials: true // Permette l'invio di credenziali, come nel caso di autenticazione
-    // basata su sessioni.
+    credentials: true 
   };
 
 app.use(cors(corsOptions));   //abilito cors su tutte le rotte

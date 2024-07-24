@@ -38,9 +38,7 @@ router.get('/me', authMiddleware, (req, res) => {
 router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 
 router.get('/google/callback', 
-  // Passport tenta di autenticare l'utente con le credenziali Google
   passport.authenticate('google', { failureRedirect: `${FRONTEND_URL}/login` }),
-  // Se l'autenticazione fallisce, l'utente viene reindirizzato alla pagina di login
   
   async (req, res) => {
     try {
