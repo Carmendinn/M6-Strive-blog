@@ -17,8 +17,8 @@ const authorSchema = new mongoose.Schema({
 
 
 // verifica pw
-authorSchema.methods.comparePassword = function (candidatePassword) {
-    return bcrypt.compare(candidatePassword, this.password);
+authorSchema.methods.comparePassword = async function(candidatePassword) {
+  return await bcrypt.compare(candidatePassword, this.password);
 };
 
 authorSchema.pre('save', async function (next) {

@@ -30,8 +30,9 @@ router.get('/:id', async (req, res) => {
 
 // POST /authors: Crea un nuovo autore
 router.post('/', async (req, res) => {
+    const author = new Authors(req.body);
     try {
-        const author = new Authors(req.body);
+        
         const newAuthor = await author.save();
         const authorResponse = newAuthor.toObject();
         delete authorResponse.password; // Rimuove la password dalla risposta

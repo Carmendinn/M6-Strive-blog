@@ -20,30 +20,28 @@ dotenv.config();     //configuro dotenv
 const app = express();  //configuro app
 
 
-const corsOptions = {     //configuro cors
+const corsOptions = {
   origin: function (origin, callback) {
-    
-    const whitelist = [
-      'http://localhost:5173', // sviluppo
-      'https://m6-strive-blog.vercel.app', //vercel
-      'https://m6-strive-blog.onrender.com' //render
-    ];
-    
-    if (process.env.NODE_ENV === 'development') {
-      
-      callback(null, true);
-    } else if (whitelist.indexOf(origin) !== -1 || !origin) {
-      
-      callback(null, true);
-    } else {
-      callback(new Error('PERMESSO NEGATO - CORS'));
-    }
-  },
-  credentials: true 
-};
+      const whitelist = [
+          'http://localhost:5173',
+          'https://m6-strive-blog.vercel.app',
+          'https://m6-strive-blog.onrender.com'
+      ];
+      if (process.env.NODE_ENV === 'development') {
+        // In sviluppo, permettiamo anche richieste senza origine (es. Postman)
+        callback(null, true);
+      } else if (whitelist.indexOf(origin) !== -1 || !origin) {
+        // In produzione, controlliamo se l'origine è nella whitelist
+        callback(null, true);
+      } else {
+        callback(new Error('PERMESSO NEGATO - CORS'));
+      }
+    },
+    credentials: true // Permette l'invio di credenziali, come nel caso di autenticazione
+    // basata su sessioni.
+  };
 
-
-app.use(cors(corsOptions));    //abilito cors su tutte le rotte
+app.use(cors(corsOptions));   //abilito cors su tutte le rotte
 
 app.use(express.json());  
 

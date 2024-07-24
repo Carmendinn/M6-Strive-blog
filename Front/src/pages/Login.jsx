@@ -19,15 +19,18 @@ export default function Login() {
 
     const params = new URLSearchParams(location.search);
     const token = params.get("token");
-    const userName = params.get("userName");
+    //const userName = params.get("userName");
 
     if (token) {
       localStorage.setItem("token", token);
       
       window.dispatchEvent(new Event("storage"));
+      window.dispatchEvent(new Event("loginStateChange"));
       navigate("/");
     }
   }, [location, navigate]);
+
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value }); 
   };
@@ -37,9 +40,7 @@ export default function Login() {
     e.preventDefault(); 
     try {
       const response = await loginUser(formData); 
-      localStorage.setItem("token", response.token);
-      localStorage.setItem("userName", response.userName); 
-      
+      localStorage.setItem("token", response.token); 
       window.dispatchEvent(new Event("storage")); 
       console.log("Login effettuato con successo!"); 
       navigate("/"); 
@@ -49,10 +50,11 @@ export default function Login() {
     }
   };
   const handleGoogleLogin = () => {
-    
     window.location.href = `${API_URL}/api/auth/google`;
   };
 
+
+  
   return (
     <div className="container mx-auto mt-8 p-4 max-w-md">
       <h2 className="text-3xl font-semibold mb-6 text-center">Login</h2>

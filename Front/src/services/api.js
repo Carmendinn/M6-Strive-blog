@@ -2,7 +2,7 @@ import axios from "axios";
 
 
 //const API_URL = "http://localhost:5001/api";
-const API_URL = "https://m6-strive-blog.onrender.com";
+const API_URL = "https://m6-strive-blog.onrender.com/api";
 
 // Configura un'istanza di axios con l'URL di base
 const api = axios.create({
@@ -42,7 +42,7 @@ export const updatePost = (id, postData) =>
 export const deletePost = (id) => api.delete(`/blogPosts/${id}`);
 
 
-
+// Funzione per aggiungere un commento a un post
 export const getComments = (postId) =>
   api.get(`/blogPosts/${postId}/comments`).then((response) => response.data);
 
@@ -52,7 +52,7 @@ export const addComment = (postId, commentData) =>
     .post(`/blogPosts/${postId}/comments`, commentData)
     .then((response) => response.data);
 
-
+// Funzione per ottenere un singolo commento tramite l'ID del post e l'ID del commento
 export const getComment = (postId, commentId) =>
   api
     .get(`/blogPosts/${postId}/comments/${commentId}`)
@@ -83,24 +83,7 @@ export const deleteComment = async (postId, commentId) => {
 };
 
 
-//  Funzione per registrare un nuovo utente
-export const registerUser = async (userData) => {
-  try {
-    const response = await api.post("/auth/register", userData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
-    console.log("Risposta registrazione:", response.data);
-    if (response.data.token) {
-      localStorage.setItem("token", response.data.token);
-    }
-    return response.data;
-  } catch (error) {
-    console.error("Errore nella registrazione:", error.response?.data || error.message);
-    throw error;
-  }
-};
+export const registerUser = (userData) => api.post("/authors", userData);
 
 export const loginUser = async (credentials) => {
   try {
@@ -112,35 +95,37 @@ export const loginUser = async (credentials) => {
     throw error; // Lancia l'errore per essere gestito dal chiamante
   }
 };
-    //  Funzione per ottenere i dati dell'utente attualmente autenticato
-    export const getMe = () =>
-      api.get("/auth/me").then((response) => response.data);
+
+//  Funzione per ottenere i dati dell'utente attualmente autenticato
+export const getMe = () =>
+  api.get("/auth/me").then((response) => response.data);
 
 
-    export const updateUserAvatar = async (formData) => {
-      const token = localStorage.getItem('token');
-      try {
-        const response = await axios.post('/api/users/avatar', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-            'Authorization': `Bearer ${token}`
-          }
-        });
-        return response.data;
-      } catch (error) {
-        throw error;
+
+export const updateUserAvatar = async (formData) => {
+  const token = localStorage.getItem('token');
+  try {
+    const response = await axios.post('/api/users/avatar', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        'Authorization': `Bearer ${token}`
       }
-    };
-    
-    // Funzione per ottenere i dati dell'utente attualmente autenticato con gestione degli errori
-    export const getUserData = async () => {
-      try {
-        const response = await api.get('/auth/me'); // Effettua la richiesta per ottenere i dati dell'utente
-        return response.data; // Restituisce i dati della risposta
-      } catch (error) {
-        console.error('Errore nel recupero dei dati utente:', error); // Log dell'errore per debugging
-        throw error; // Lancia l'errore per essere gestito dal chiamante
-      }
-    };
+    });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+// Funzione per ottenere i dati dell'utente attualmente autenticato con gestione degli errori
+export const getUserData = async () => {
+  try {
+    const response = await api.get('/auth/me'); // Effettua la richiesta per ottenere i dati dell'utente
+    return response.data; // Restituisce i dati della risposta
+  } catch (error) {
+    console.error('Errore nel recupero dei dati utente:', error); // Log dell'errore per debugging
+    throw error; // Lancia l'errore per essere gestito dal chiamante
+  }
+};
 
 export default api;
