@@ -2,7 +2,7 @@ import axios from "axios";
 
 
 //const API_URL = "http://localhost:5001/api";
-const API_URL = "https://strive-blog-ubre.onrender.com/api";
+const API_URL = "https://m6-strive-blog.onrender.com";
 
 // Configura un'istanza di axios con l'URL di base
 const api = axios.create({
