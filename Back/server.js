@@ -25,8 +25,8 @@ const corsOptions = {     //configuro cors
     
     const whitelist = [
       'http://localhost:5173', // sviluppo
-      'https://strive-blog-delta.vercel.app', //vercel
-      'https://strive-blog-ubre.onrender.com' //render
+      'https://m6-strive-blog.vercel.app', //vercel
+      'https://m6-strive-blog.onrender.com' //render
     ];
     
     if (process.env.NODE_ENV === 'development') {
