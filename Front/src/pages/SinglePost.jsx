@@ -212,7 +212,7 @@ export default function PostDetail() {
       ))}
       {isLoggedIn ? (
         <form
-          onSubmit={editingComment ? handleEditCommentSubmit : handleCommentSubmit}
+          onSubmit={editingComment ? handleCommentSubmit : handleCommentSubmit}
           className="mt-4"
         >
           <textarea

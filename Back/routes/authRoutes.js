@@ -42,20 +42,15 @@ router.get('/google/callback',
   
   async (req, res) => {
     try {
-      // A questo punto, l'utente è autenticato con successo
-      // req.user contiene i dati dell'utente forniti da Passport
-
-      // Genera un JWT (JSON Web Token) per l'utente autenticato
-      // Usiamo l'ID dell'utente dal database come payload del token
+     
       const token = await generateJWT({ id: req.user._id });
 
-      // Reindirizza l'utente al frontend, passando il token come parametro URL
-      // Il frontend può quindi salvare questo token e usarlo per le richieste autenticate
+      
       res.redirect(`${FRONTEND_URL}/login?token=${token}`);
     } catch (error) {
-      // Se c'è un errore nella generazione del token, lo logghiamo
+      
       console.error('Errore nella generazione del token:', error);
-      // E reindirizziamo l'utente alla pagina di login con un messaggio di errore
+      
       res.redirect(`${FRONTEND_URL}/login?error=auth_failed`);
     }
   }

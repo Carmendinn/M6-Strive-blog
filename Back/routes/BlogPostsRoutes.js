@@ -180,47 +180,48 @@ router.post("/:id/comments", async (req, res) => {
       if (!post) {
         return res.status(404).json({ message: "Post non trovato" });
       }
+  
       const comment = post.comments.id(req.params.commentId);
       if (!comment) {
         return res.status(404).json({ message: "Commento non trovato" });
       }
+  
+      if (!req.body.content) {
+        return res.status(400).json({ message: "Il contenuto del commento non può essere vuoto" });
+      }
+  
       // Aggiorna il commento
       comment.content = req.body.content;
       await post.save();
+  
       res.json(comment);
     } catch (error) {
-      res.status(400).json({ message: error.message });
+      console.error("Errore durante l'aggiornamento del commento:", error);
+      res.status(500).json({ message: error.message });
     }
   });
   
   
-// DELETE /blogPosts/:id/comments/:commentId => elimina un commento specifico da un post specifico
-router.delete("/:id/comments/:commentId", async (req, res) => {
-  try {
-    // Cerca il post nel database usando l'ID fornito
-    const post = await BlogPosts.findById(req.params.id);
-    if (!post) {
-      // Se il post non viene trovato, invia una risposta 404
-      return res.status(404).json({ message: "Post non trovato" });
+  
+  router.delete("/:id/comments/:commentId", async (req, res) => {
+    try {
+      const post = await BlogPosts.findById(req.params.id);
+      if (!post) {
+        return res.status(404).json({ message: "Post non trovato" });
+      }
+      const comment = post.comments.id(req.params.commentId);
+      if (!comment) {
+        return res.status(404).json({ message: "Commento non trovato" });
+      }
+      comment.remove(); // Rimuove il commento
+      await post.save(); // Salva le modifiche
+      res.status(200).json({ message: "Commento eliminato" });
+    } catch (error) {
+      console.error("Errore nella cancellazione del commento:", error); // Aggiungi il log dell'errore
+      res.status(500).json({ message: error.message });
     }
-    // Cerca il commento specifico all'interno del post
-    const comment = post.comments.id(req.params.commentId);
-    if (!comment) {
-      // Se il commento non viene trovato, invia una risposta 404
-      return res.status(404).json({ message: "Commento non trovato" });
-    }
-    // Rimuovi il commento dal post
-    comment.remove();
-    // Salva le modifiche nel database
-    await post.save();
-    // Invia un messaggio di conferma come risposta JSON
-    res.json({ message: "Commento eliminato con successo" });
-  } catch (error) {
-    // In caso di errore, invia una risposta di errore
-    res.status(500).json({ message: error.message });
-  }
-});
-
+  });
+  
 
   
 
