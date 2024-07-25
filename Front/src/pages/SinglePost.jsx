@@ -201,7 +201,7 @@ export default function PostDetail() {
             <div className="space-y-4">
               {comments.map((comment) => (
                 <div key={comment._id} className="bg-gray-100 p-4 rounded-lg">
-                  {editingCommentId === comment._id ? (
+                  {editingComment === comment._id ? (
                     <div className="flex flex-col space-y-2">
                       <textarea
                         value={editedCommentContent}
