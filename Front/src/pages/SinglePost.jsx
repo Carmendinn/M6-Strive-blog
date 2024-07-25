@@ -53,6 +53,16 @@ export default function PostDetail() {
     checkAuthAndFetchUserData();
   }, [id]);
 
+  
+  const fetchUpdatedComments = async () => {
+    try {
+      const updatedComments = await getComments(id);
+      setComments(updatedComments);
+    } catch (error) {
+      console.error("Errore nel recupero dei commenti aggiornati:", error);
+    }
+  };
+
   const handleCommentSubmit = async (e) => {
     e.preventDefault();
     if (!isLoggedIn) {
