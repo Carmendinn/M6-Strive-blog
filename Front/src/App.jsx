@@ -17,16 +17,15 @@ function App() {
   const [posts, setPosts] = useState([]);
   const [filteredPosts, setFilteredPosts] = useState([]);
 
-  const fetchPosts = async () => {
-    try {
-      const fetchedPosts = await getPosts();
-      setPosts(fetchedPosts);
-    } catch (error) {
-      console.error("Errore nel recupero dei post:", error);
-    }
-  };
-
   useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const response = await getPosts();
+        setPosts(response.data);
+      } catch (error) {
+        console.error('Errore nella fetch dei post:', error);
+      }
+    };
     fetchPosts();
   }, []);
 
@@ -61,7 +60,7 @@ function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} />
             <Route path="/" element={<Home posts={filteredPosts.length > 0 ? filteredPosts : posts} />} />
-            <Route path="/create-post" element={<CreatePost onPostCreated={fetchPosts} />} />
+            <Route path="/create" element={<CreatePost />} />
             <Route path="/post/:id" element={<SinglePost />} />
             <Route
               path="/search"
