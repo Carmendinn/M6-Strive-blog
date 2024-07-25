@@ -1,3 +1,4 @@
 import crypto from 'crypto';
 
-console.log(crypto.randomBytes(64).toString('hex'));;
+// Genera 64 byte di dati casuali e li converte in una stringa esadecimale
+console.log(crypto.randomBytes(64).toString('hex'));

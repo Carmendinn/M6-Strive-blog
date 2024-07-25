@@ -3,6 +3,7 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import { getPost, getComments, addComment, getUserData, deletePost, deleteComment, updatePost, updateComment } from "../services/api";
 
 export default function PostDetail() {
+  // Stati per gestire i dati del post, commenti e stato di autenticazione
   const [post, setPost] = useState(null);
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState({ content: "" });
@@ -11,9 +12,12 @@ export default function PostDetail() {
   const [editingComment, setEditingComment] = useState(null);
   const [editingPost, setEditingPost] = useState(false);
   const [editedCommentContent, setEditedCommentContent] = useState("");
+  
+  // Uso degli hook per ottenere l'id del post dalla URL e la funzione per navigare
   const { id } = useParams();
   const navigate = useNavigate();
 
+  // Effetto per caricare i dati del post e i commenti
   useEffect(() => {
     const fetchPost = async () => {
       try {
@@ -54,7 +58,7 @@ export default function PostDetail() {
     checkAuthAndFetchUserData();
   }, [id]);
 
-
+  // Funzione per ricaricare i commenti aggiornati
   const fetchUpdatedComments = async () => {
     try {
       const updatedComments = await getComments(id);
@@ -64,6 +68,7 @@ export default function PostDetail() {
     }
   };
 
+  // Gestisco l'invio di un nuovo commento
   const handleCommentSubmit = async (e) => {
     e.preventDefault();
     if (!isLoggedIn) {
@@ -88,9 +93,8 @@ export default function PostDetail() {
     }
   };
 
-
+  // Gestisco l'eliminazione di un commento
   const handleDeleteComment = async (commentId) => {
-    // Verifica se l'utente è autenticato e ha i permessi per eliminare il commento
     if (!userData) {
       alert("Devi essere autenticato per eliminare un commento.");
       return;
@@ -105,20 +109,16 @@ export default function PostDetail() {
     if (window.confirm("Sei sicuro di voler eliminare questo commento?")) {
       try {
         await deleteComment(id, commentId);
-        await fetchUpdatedComments(); // Ricarica i commenti aggiornati
+        await fetchUpdatedComments(); // Ricarico i commenti aggiornati
         setComments(prevComments => prevComments.filter(comment => comment._id !== commentId));
       } catch (error) {
         console.error("Errore nell'eliminazione del commento:", error);
-        if (error.response) {
-          console.error('Response data:', error.response.data);
-          console.error('Response status:', error.response.status);
-          console.error('Response headers:', error.response.headers);
-        }
         alert("Errore nell'eliminazione del commento: " + (error.response?.data?.message || error.message));
       }
     }
   };
 
+  // Gestisco l'eliminazione del post
   const handleDeletePost = async () => {
     try {
       await deletePost(id);
@@ -128,34 +128,35 @@ export default function PostDetail() {
     }
   };
 
-
+  // Gestisco l'inizio della modifica di un commento
   const handleEditComment = (commentId, content) => {
     setEditingComment(commentId);
     setEditedCommentContent(content);
   };
 
+  // Gestisco il salvataggio delle modifiche di un commento
   const handleSaveEdit = async (commentId) => {
     try {
       const updatedComment = await updateComment(id, commentId, { content: editedCommentContent });
-    setComments(prevComments => prevComments.map(comment => 
-      comment._id === commentId ? { ...comment, content: editedCommentContent } : comment
-    ));
-    setEditingComment(null);
-  } catch (error) {
-    console.error('Errore nel salvare il commento:', error);
-  }
-};
+      setComments(prevComments => prevComments.map(comment => 
+        comment._id === commentId ? { ...comment, content: editedCommentContent } : comment
+      ));
+      setEditingComment(null);
+    } catch (error) {
+      console.error('Errore nel salvare il commento:', error);
+    }
+  };
 
-
+  // Gestisco l'inizio della modifica del post
   const handleEditPost = () => {
     setEditingPost(true);
   };
 
+  // Gestisco il salvataggio delle modifiche del post
   const handleEditPostSubmit = async (e) => {
     e.preventDefault();
     if (!isLoggedIn || !post) {
       console.error('Utente non autorizzato o post non valido.');
-
       return;
     }
     try {
@@ -168,10 +169,10 @@ export default function PostDetail() {
       setEditingPost(false);
     } catch (error) {
       console.error("Errore nell'aggiornamento del post:", error);
-
     }
   };
 
+  // Se non ho ancora i dati del post, mostro un messaggio di caricamento
   if (!post) return <div>Caricamento...</div>;
 
   return (

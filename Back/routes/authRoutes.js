@@ -24,6 +24,7 @@ router.post('/login', async (req, res) => {
   } catch (error) {
       console.error('Errore nel login', error); // Log per debug
       res.status(500).json({ message: 'Errore nel server' });
+      next(error);
   }
 });
 generateJWT// get/me utente collegato

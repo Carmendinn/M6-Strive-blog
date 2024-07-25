@@ -2,12 +2,16 @@ import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import Authors from '../models/Authors.js';
 import passport from "passport";
 
-passport.use(new GoogleStrategy({
-  clientID: process.env.GOOGLE_CLIENT_ID,
+
+//settiamo la strategy per l'autenticazione con Google con i dati forniti da google cloud + la callback del backend
+passport.use(new GoogleStrategy({ 
+  clientID: process.env.GOOGLE_CLIENT_ID,        
   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
   callbackURL: `${process.env.BACKEND_URL}/api/auth/google/callback`
     
 },
+
+
 async function(accessToken, refreshToken, profile, done) {
   try {
     // Cerca prima l'utente per email

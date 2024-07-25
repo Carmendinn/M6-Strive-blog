@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { createPost, getMe } from "../services/api";
 
 export default function CreatePost() {
+  // Inizializzo lo stato per i dati del post e il file dell'immagine di copertura
   const [post, setPost] = useState({
     title: "",
     category: "",
@@ -14,38 +15,48 @@ export default function CreatePost() {
   const [coverFile, setCoverFile] = useState(null);
   const navigate = useNavigate();
 
+  // Uso useEffect per recuperare i dati dell'utente al montaggio del componente
   useEffect(() => {
     const fetchUserEmail = async () => {
       try {
+        // Chiamo la funzione per ottenere i dati dell'utente
         const userData = await getMe();
+        // Aggiorno lo stato del post con l'email dell'autore
         setPost((prevPost) => ({ ...prevPost, author: userData.email }));
       } catch (error) {
         console.error("Errore nel recupero dei dati utente:", error);
+        // Se c'è un errore, navigo verso la pagina di login
         navigate("/login");
       }
     };
     fetchUserEmail();
   }, [navigate]);
 
+  // Gestisco i cambiamenti nei campi di input del modulo
   const handleChange = (e) => {
     const { name, value } = e.target;
+    // Se il campo modificato è il tempo di lettura, aggiorno il valore specifico
     if (name === "readTimeValue") {
       setPost({
         ...post,
         readTime: { ...post.readTime, value: parseInt(value) },
       });
     } else {
+      // Altrimenti aggiorno il campo corrispondente nel post
       setPost({ ...post, [name]: value });
     }
   };
 
+  // Gestisco la selezione del file dell'immagine di copertura
   const handleFileChange = (e) => {
     setCoverFile(e.target.files[0]);
   };
 
+  // Gestisco l'invio del modulo
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      // Creo un oggetto FormData per inviare i dati del post e il file
       const formData = new FormData();
       Object.keys(post).forEach((key) => {
         if (key === "readTime") {
@@ -56,14 +67,15 @@ export default function CreatePost() {
         }
       });
 
+      // Aggiungo il file se è stato selezionato
       if (coverFile) {
         formData.append("cover", coverFile);
       }
 
-      // Chiamata alla funzione createPost
+      // Chiamo la funzione per creare il post
       await createPost(formData);
 
-      // Reset del form
+      // Reset del modulo dopo la creazione del post
       setPost({
         title: "",
         category: "",
@@ -72,11 +84,11 @@ export default function CreatePost() {
         author: post.author,
       });
 
-      // Navigazione alla home
     } catch (error) {
       console.error("Errore nella creazione del post:", error);
-    } navigate("/");
-
+    }
+    // Navigo verso la home page dopo l'invio del modulo
+    navigate("/");
   };
 
   return (
