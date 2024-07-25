@@ -180,48 +180,38 @@ router.post("/:id/comments", async (req, res) => {
       if (!post) {
         return res.status(404).json({ message: "Post non trovato" });
       }
-  
       const comment = post.comments.id(req.params.commentId);
       if (!comment) {
         return res.status(404).json({ message: "Commento non trovato" });
       }
-  
-      if (!req.body.content) {
-        return res.status(400).json({ message: "Il contenuto del commento non può essere vuoto" });
-      }
-  
-      // Aggiorna il commento
+      // Aggiorna il contenuto del commento
       comment.content = req.body.content;
+      // Salva le modifiche nel database
       await post.save();
-  
       res.json(comment);
     } catch (error) {
-      console.error("Errore durante l'aggiornamento del commento:", error);
-      res.status(500).json({ message: error.message });
+      res.status(400).json({ message: error.message });
     }
   });
   
-  
-  
+  // DELETE elimina un commento specifico da un post specifico
   router.delete("/:id/comments/:commentId", async (req, res) => {
     try {
-      const post = await BlogPosts.findById(req.params.id);
+      const post = await BlogPost.findById(req.params.id);
       if (!post) {
         return res.status(404).json({ message: "Post non trovato" });
       }
-      const comment = post.comments.id(req.params.commentId);
-      if (!comment) {
+      const commentIndex = post.comments.findIndex(comment => comment._id.toString() === req.params.commentId);
+      if (commentIndex === -1) {
         return res.status(404).json({ message: "Commento non trovato" });
       }
-      comment.remove(); // Rimuove il commento
-      await post.save(); // Salva le modifiche
-      res.status(200).json({ message: "Commento eliminato" });
+      post.comments.splice(commentIndex, 1);
+      await post.save();
+      res.json({ message: "Commento eliminato con successo" });
     } catch (error) {
-      console.error("Errore nella cancellazione del commento:", error); // Aggiungi il log dell'errore
       res.status(500).json({ message: error.message });
     }
   });
-  
 
   
 

@@ -63,7 +63,7 @@ export default function PostDetail() {
       const commentData = {
         content: newComment.content,
         name: `${userData.nome} ${userData.cognome}`,
-        email: userData.email, // Assicurati che l'email sia qui
+        email: userData.email, 
       };
       const newCommentData = await addComment(id, commentData);
       if (!newCommentData._id) {
@@ -79,14 +79,31 @@ export default function PostDetail() {
   
 
   const handleDeleteComment = async (commentId) => {
-    console.log("ID del commento da eliminare:", commentId); // Verifica l'ID del commento prima di procedere
-    try {
-      await deleteComment(id, commentId);
-      setComments((prevComments) =>
-        prevComments.filter((comment) => comment._id !== commentId)
-      );
-    } catch (error) {
-      console.error("Errore nella cancellazione del commento:", error);
+    // Verifica se l'utente è autenticato e ha i permessi per eliminare il commento
+    if (!userData) {
+      alert("Devi essere autenticato per eliminare un commento.");
+      return;
+    }
+
+    const commentToDelete = comments.find(comment => comment._id === commentId);
+    if (!commentToDelete || commentToDelete.email !== userData.email) {
+      alert("Non hai i permessi per eliminare questo commento.");
+      return;
+    }
+
+    if (window.confirm("Sei sicuro di voler eliminare questo commento?")) {
+      try {
+        await deleteComment(id, commentId);
+        await fetchUpdatedComments();
+      } catch (error) {
+        console.error("Errore nell'eliminazione del commento:", error);
+        if (error.response) {
+          console.error('Response data:', error.response.data);
+          console.error('Response status:', error.response.status);
+          console.error('Response headers:', error.response.headers);
+        }
+        alert("Errore nell'eliminazione del commento: " + (error.response?.data?.message || error.message));
+      }
     }
   };
   
@@ -100,9 +117,20 @@ export default function PostDetail() {
   };
   
 
-  const handleEditComment = (comment) => {
-    setEditingComment(comment);
-    setNewComment({ content: comment.content });
+  const handleEditComment = (commentId, content) => {
+    setEditingComment(commentId);
+    setEditedCommentContent(content);
+  };
+
+  const handleSaveEdit = async (commentId) => {
+    try {
+      await updateComment(id, commentId, { content: editedCommentContent });
+      setEditingComment(null);
+      await fetchUpdatedComments();
+    } catch (error) {
+      console.error("Errore nell'aggiornamento del commento:", error);
+      alert("Errore nell'aggiornamento del commento");
+    }
   };
 
   
@@ -128,8 +156,7 @@ export default function PostDetail() {
     setEditingPost(false);
   } catch (error) {
     console.error("Errore nell'aggiornamento del post:", error);
-    // Aggiungi gestione dell'errore, ad esempio:
-    // alert(`Errore nell'aggiornamento del post: ${error.message}`);
+    
   }
 };
 
