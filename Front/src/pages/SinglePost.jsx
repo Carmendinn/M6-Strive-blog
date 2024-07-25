@@ -210,7 +210,7 @@ export default function PostDetail() {
                       />
                       <div className="flex space-x-2">
                         <button onClick={() => handleSaveEdit(comment._id)} className="bg-blue-500 text-white px-4 py-2 rounded-md">Salva</button>
-                        <button onClick={() => setEditingCommentId(null)} className="bg-gray-500 text-white px-4 py-2 rounded-md">Annulla</button>
+                        <button onClick={() => setEditingComment(null)} className="bg-gray-500 text-white px-4 py-2 rounded-md">Annulla</button>
                       </div>
                     </div>
                   ) : (
