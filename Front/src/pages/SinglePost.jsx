@@ -95,13 +95,13 @@ export default function PostDetail() {
       alert("Devi essere autenticato per eliminare un commento.");
       return;
     }
-  
+
     const commentToDelete = comments.find(comment => comment._id === commentId);
     if (!commentToDelete || commentToDelete.email !== userData.email) {
       alert("Non hai i permessi per eliminare questo commento.");
       return;
     }
-  
+
     if (window.confirm("Sei sicuro di voler eliminare questo commento?")) {
       try {
         await deleteComment(id, commentId);
@@ -177,7 +177,7 @@ export default function PostDetail() {
       <article className="bg-white shadow-md rounded-lg overflow-hidden">
         <header className="relative">
           <img src={post.cover} alt={post.title} className="w-full h-64 object-cover" />
-          <div className="absolute top-0 left-0 p-4 bg-gradient-to-t from-black to-transparent text-white">
+          <div className="text-white">
             <h1 className="text-3xl font-bold mb-2">{post.title}</h1>
             <div className="text-sm">
               <span className="block">Categoria: {post.category}</span>
@@ -187,10 +187,21 @@ export default function PostDetail() {
           </div>
         </header>
         <section className="p-4">
+          {/* Sezione Contenuto del Post */}
           <div
-            className="post-text"
+            className="post-text mb-4"
             dangerouslySetInnerHTML={{ __html: post.content }}
           />
+
+          {/* Sezione Metadati del Post */}
+          <div className="text-white">
+            <h1 className="text-3xl font-bold mb-2">{post.title}</h1>
+            <div className="text-sm">
+              <span className="block">Categoria: {post.category}</span>
+              <span className="block">Autore: {post.author}</span>
+              <span className="block">Tempo di lettura: {post.readTime.value} {post.readTime.unit}</span>
+            </div>
+          </div>
         </section>
         <section className="p-4 border-t border-gray-200">
           <h3 className="text-2xl font-semibold mb-4">Commenti</h3>
@@ -244,6 +255,6 @@ export default function PostDetail() {
           )}
         </section>
       </article>
-    </div>
+    </div >
   );
 };
