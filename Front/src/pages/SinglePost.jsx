@@ -95,17 +95,17 @@ export default function PostDetail() {
       alert("Devi essere autenticato per eliminare un commento.");
       return;
     }
-
+  
     const commentToDelete = comments.find(comment => comment._id === commentId);
     if (!commentToDelete || commentToDelete.email !== userData.email) {
       alert("Non hai i permessi per eliminare questo commento.");
       return;
     }
-
+  
     if (window.confirm("Sei sicuro di voler eliminare questo commento?")) {
       try {
         await deleteComment(id, commentId);
-        await fetchUpdatedComments();
+        await fetchUpdatedComments(); // Ricarica i commenti aggiornati
       } catch (error) {
         console.error("Errore nell'eliminazione del commento:", error);
         if (error.response) {
@@ -137,13 +137,12 @@ export default function PostDetail() {
     try {
       await updateComment(id, commentId, { content: editedCommentContent });
       setEditingComment(null);
-      await fetchUpdatedComments();
+      await fetchUpdatedComments(); // Ricarica i commenti aggiornati
     } catch (error) {
       console.error("Errore nell'aggiornamento del commento:", error);
       alert("Errore nell'aggiornamento del commento");
     }
   };
-
 
 
   const handleEditPost = () => {
@@ -187,14 +186,12 @@ export default function PostDetail() {
             </div>
           </div>
         </header>
-
         <section className="p-4">
           <div
             className="post-text"
             dangerouslySetInnerHTML={{ __html: post.content }}
           />
         </section>
-
         <section className="p-4 border-t border-gray-200">
           <h3 className="text-2xl font-semibold mb-4">Commenti</h3>
           {comments.length > 0 ? (
