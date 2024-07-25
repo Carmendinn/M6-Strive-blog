@@ -197,7 +197,7 @@ router.post("/:id/comments", async (req, res) => {
   // DELETE elimina un commento specifico da un post specifico
   router.delete("/:id/comments/:commentId", async (req, res) => {
     try {
-      const post = await BlogPost.findById(req.params.id);
+      const post = await BlogPosts.findById(req.params.id);
       if (!post) {
         return res.status(404).json({ message: "Post non trovato" });
       }
