@@ -74,7 +74,7 @@ export default function PostDetail() {
       const commentData = {
         content: newComment.content,
         name: `${userData.nome} ${userData.cognome}`,
-        email: userData.email, 
+        email: userData.email,
       };
       const newCommentData = await addComment(id, commentData);
       if (!newCommentData._id) {
@@ -87,7 +87,7 @@ export default function PostDetail() {
       alert(`Errore nell'invio del commento: ${error.response?.data?.message || error.message}`);
     }
   };
-  
+
 
   const handleDeleteComment = async (commentId) => {
     // Verifica se l'utente è autenticato e ha i permessi per eliminare il commento
@@ -117,7 +117,7 @@ export default function PostDetail() {
       }
     }
   };
-  
+
   const handleDeletePost = async () => {
     try {
       await deletePost(id);
@@ -126,7 +126,7 @@ export default function PostDetail() {
       console.error('Errore nella cancellazione del post:', error);
     }
   };
-  
+
 
   const handleEditComment = (commentId, content) => {
     setEditingComment(commentId);
@@ -144,32 +144,32 @@ export default function PostDetail() {
     }
   };
 
-  
-  
+
+
   const handleEditPost = () => {
     setEditingPost(true);
   };
 
   const handleEditPostSubmit = async (e) => {
-  e.preventDefault();
-  if (!isLoggedIn || !post) {
-    console.error('Utente non autorizzato o post non valido.');
+    e.preventDefault();
+    if (!isLoggedIn || !post) {
+      console.error('Utente non autorizzato o post non valido.');
 
-    return;
-  }
-  try {
-    const updatedPostData = {
-      ...post,
-      content: post.content,
-    };
-    await updatePost(id, updatedPostData);
-    setPost(updatedPostData);
-    setEditingPost(false);
-  } catch (error) {
-    console.error("Errore nell'aggiornamento del post:", error);
-    
-  }
-};
+      return;
+    }
+    try {
+      const updatedPostData = {
+        ...post,
+        content: post.content,
+      };
+      await updatePost(id, updatedPostData);
+      setPost(updatedPostData);
+      setEditingPost(false);
+    } catch (error) {
+      console.error("Errore nell'aggiornamento del post:", error);
+
+    }
+  };
 
   if (!post) return <div>Caricamento...</div>;
 
