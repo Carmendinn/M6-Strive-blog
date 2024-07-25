@@ -91,6 +91,8 @@ export const loginUser = async (credentials) => {
     throw error; // Rilancia l'errore per gestirlo a monte
   }
 };
+export const getMe = () =>
+  api.get("/auth/me").then((response) => response.data);
 
 // Funzione per ottenere i dati dell'utente attualmente autenticato
 export const getUserData = async () => {
