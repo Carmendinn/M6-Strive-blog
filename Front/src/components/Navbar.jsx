@@ -11,13 +11,14 @@ export default function Navbar() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    
     const checkLoginStatus = async () => {
       const token = localStorage.getItem("token");
       if (token) {
         try {
-          await getUserData();
+          const userData = await getUserData();
           setIsLoggedIn(true);
+          setUserName(userData.nome); 
+          setAvatar(userData.avatar); 
         } catch (error) {
           console.error("Token non valido:", error);
           localStorage.removeItem("token");
@@ -27,19 +28,27 @@ export default function Navbar() {
         setIsLoggedIn(false);
       }
     };
-
+  
     checkLoginStatus();
-
-
+    
     window.addEventListener("storage", checkLoginStatus);
     window.addEventListener("loginStateChange", checkLoginStatus);
-
+  
     return () => {
       window.removeEventListener("storage", checkLoginStatus);
       window.removeEventListener("loginStateChange", checkLoginStatus);
     };
   }, []);
-
+  
+  const handleLogin = async (loginData) => {
+    try {
+      const response = await loginUser(loginData);
+      localStorage.setItem('token', response.token);
+      window.dispatchEvent(new Event('loginStateChange'));
+    } catch (error) {
+      console.error('Errore durante il login:', error);
+    }
+  };
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('userName');
