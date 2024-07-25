@@ -122,16 +122,18 @@ router.delete('/:id', async (req, res) => {
 
 
 
-router.get('/:id/comments', async (req, res) => {
-    try {
-        const post = await BlogPosts.findById(req.params.id);
-
-        if (!post) {
-            return res.status(404).json ({ message: 'Il post non esiste'})
-        }
-    } catch (error) {
-        res.status(500).json({ message: err.message})
+router.get("/:id/comments", async (req, res) => {
+  try {
+    const post = await BlogPosts.findById(req.params.id);
+    if (!post) {
+      return res.status(404).json({ message: "Post non trovato" });
     }
+    console.log("Commenti del post:", post.comments); // Log dei commenti esistenti
+    res.json(post.comments);
+  } catch (error) {
+    console.error("Errore nel recupero dei commenti:", error);
+    res.status(500).json({ message: error.message });
+  }
 });
 
 router.get('/:id/comments/:commentId', async (req, res) => {

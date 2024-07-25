@@ -63,7 +63,7 @@ export default function PostDetail() {
       const commentData = {
         content: newComment.content,
         name: `${userData.nome} ${userData.cognome}`,
-        email: userData.email,
+        email: userData.email, // Assicurati che l'email sia qui
       };
       const newCommentData = await addComment(id, commentData);
       if (!newCommentData._id) {
@@ -76,6 +76,7 @@ export default function PostDetail() {
       alert(`Errore nell'invio del commento: ${error.response?.data?.message || error.message}`);
     }
   };
+  
 
   const handleDeleteComment = async (commentId) => {
     console.log("ID del commento da eliminare:", commentId); // Verifica l'ID del commento prima di procedere
@@ -104,30 +105,7 @@ export default function PostDetail() {
     setNewComment({ content: comment.content });
   };
 
-  const handleEditCommentSubmit = async (e) => {
-    e.preventDefault();
-    if (!editingComment) return;
   
-    try {
-      const updatedCommentData = {
-        content: newComment.content,
-      };
-  
-      // Effettua la richiesta PUT per aggiornare il commento
-      await updateComment(id, editingComment._id, updatedCommentData);
-  
-      // Dopo aver aggiornato, rifai una richiesta GET per ottenere i dati aggiornati
-      const commentsData = await getComments(id);
-      setComments(commentsData);
-  
-      // Ripristina lo stato dell'editing
-      setEditingComment(null);
-      setNewComment({ content: "" });
-    } catch (error) {
-      console.error("Errore nell'aggiornamento del commento:", error);
-      alert(`Errore nell'aggiornamento del commento: ${error.response?.data?.message || error.message}`);
-    }
-  };
   
   const handleEditPost = () => {
     setEditingPost(true);
@@ -212,52 +190,49 @@ export default function PostDetail() {
       <h3 className="text-2xl font-semibold mt-8 mb-4">Commenti</h3>
       {comments.map((comment) => (
         <div key={comment._id} className="bg-gray-100 p-4 rounded-lg mb-4 shadow-sm">
-        <p className="text-gray-800">{comment.content}</p>
-        <small className="text-gray-600">Di: {comment.name}</small>
-        {isLoggedIn && (
-          <div className="mt-2">
-            <button
-              onClick={() => handleEditComment(comment)}
-              className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mr-2"
-            >
-              Modifica
-            </button>
-            <button
-              onClick={() => handleDeleteComment(comment._id)}
-              className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-            >
-              Elimina
-            </button>
-          </div>
+          <p className="text-gray-800">{comment.content}</p>
+          <small className="text-gray-600">Di: {comment.name}</small> {/* Visualizza il nome e l'email */}
+          {isLoggedIn && (
+            <div className="mt-2">
+              <button
+                onClick={() => handleEditComment(comment)}
+                className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mr-2"
+              >
+                Modifica
+              </button>
+              <button
+                onClick={() => handleDeleteComment(comment._id)}
+                className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              >
+                Elimina
+              </button>
+            </div>
           )}
         </div>
       ))}
       {isLoggedIn ? (
         <form
           onSubmit={editingComment ? handleEditCommentSubmit : handleCommentSubmit}
-          className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
+          className="mt-4"
         >
           <textarea
             value={newComment.content}
             onChange={(e) => setNewComment({ content: e.target.value })}
-            className="w-full p-2 border border-gray-300 rounded mb-4"
-            rows="3"
-            placeholder="Scrivi il tuo commento..."
+            className="w-full p-2 border border-gray-300 rounded"
+            rows="4"
+            placeholder="Scrivi un commento..."
           />
           <button
             type="submit"
-            className="bg-gray-700 hover:bg-gray-800 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mt-2"
           >
-            {editingComment ? "Salva Modifiche" : "Invia commento"}
+            {editingComment ? "Salva Modifiche" : "Aggiungi Commento"}
           </button>
         </form>
       ) : (
-        <p className="text-gray-700">
-          <Link to="/login" className="text-blue-500 hover:underline">Accedi</Link> per visualizzare o lasciare commenti.
-        </p>
+        <p className="mt-4 text-red-500">Effettua il login per lasciare un commento.</p>
       )}
     </article>
   </div>
-);
-
+  );
 }
