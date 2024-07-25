@@ -120,3 +120,4 @@ export const updateUserAvatar = async (formData) => {
     throw error; // Rilancia l'errore per gestirlo a monte
   }
 };
+export default api;
