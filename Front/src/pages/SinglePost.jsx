@@ -106,6 +106,7 @@ export default function PostDetail() {
       try {
         await deleteComment(id, commentId);
         await fetchUpdatedComments(); // Ricarica i commenti aggiornati
+        setComments(prevComments => prevComments.filter(comment => comment._id !== commentId));
       } catch (error) {
         console.error("Errore nell'eliminazione del commento:", error);
         if (error.response) {
@@ -135,14 +136,15 @@ export default function PostDetail() {
 
   const handleSaveEdit = async (commentId) => {
     try {
-      await updateComment(id, commentId, { content: editedCommentContent });
-      setEditingComment(null);
-      await fetchUpdatedComments(); // Ricarica i commenti aggiornati
-    } catch (error) {
-      console.error("Errore nell'aggiornamento del commento:", error);
-      alert("Errore nell'aggiornamento del commento");
-    }
-  };
+      const updatedComment = await updateComment(id, commentId, { content: editedCommentContent });
+    setComments(prevComments => prevComments.map(comment => 
+      comment._id === commentId ? { ...comment, content: editedCommentContent } : comment
+    ));
+    setEditingComment(null);
+  } catch (error) {
+    console.error('Errore nel salvare il commento:', error);
+  }
+};
 
 
   const handleEditPost = () => {

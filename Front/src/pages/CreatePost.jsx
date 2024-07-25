@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { createPost, getMe } from "../services/api";
 
-export default function CreatePost() {
+export default function CreatePost({ onPostCreated }) {
   const [post, setPost] = useState({
     title: "",
     category: "",
@@ -61,7 +61,8 @@ export default function CreatePost() {
       }
 
       // Chiamata alla funzione createPost
-      await createPost(formData);
+      const newPost = await createPost(formData);
+      onPostCreated(newPost);
 
       // Reset del form
       setPost({
@@ -73,9 +74,10 @@ export default function CreatePost() {
       });
 
       // Navigazione alla home
+      navigate("/");
     } catch (error) {
       console.error("Errore nella creazione del post:", error);
-    } navigate("/");
+    } 
 
   };
 

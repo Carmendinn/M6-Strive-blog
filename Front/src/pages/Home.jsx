@@ -2,6 +2,20 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 export default function Home({ posts }) {
+  const [posts, setPosts] = useState([]);
+
+  const fetchPosts = async () => {
+    try {
+      const fetchedPosts = await getPosts();
+      setPosts(fetchedPosts);
+    } catch (error) {
+      console.error("Errore nel recupero dei post:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchPosts();
+  }, []);
   return (
     <div className="container mx-auto p-4 mt-5">
       <h1 className="text-3xl font-bold mb-4 mt-5 text-center">Adopt little friends for life</h1>
